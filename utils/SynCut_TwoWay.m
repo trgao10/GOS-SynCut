@@ -39,7 +39,6 @@ if debugFlag
         error('with debugFlag=true, must provide ground truth colorList');
     end
     hsv = getoptions(params, 'hsv', rgb2hsv(winter));
-    close(gcf);
     
     [GCL, GCL_Dvec, GCL_W] = assembleGCL(G.adjMat, edgePotCell, d);
     
@@ -335,7 +334,6 @@ while true
         plotPerEdgeFrustration_enhance_cc(G,CollageSolPerEdgeFrustMat,hsv);
         title(['CollageSol total frustration = '...
             num2str(sum(CollageSolPerEdgeFrustVec))]);
-        pause();
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
