@@ -15,7 +15,8 @@ end
 N = 100;  %%% number of vertices in each cluster of the random graph
 d = 5;   %%% dimension of the orthogonal group
 numClusters = 2;
-numLinks = randi([100,250]);  %%% number of cross-cluster links
+numLinks = randi([150,250]);  %%% number of cross-cluster links
+% numLinks = randi([100,250]);  %%% number of cross-cluster links
 degUB = 8;      %%% vertex degree upper bound withtin each cluster
 degLB = 4;      %%% vertex degree lower bound withtin each cluster
 ccType = 'unif';  %%%% ['nn' | 'unif']

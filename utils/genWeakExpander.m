@@ -1,6 +1,8 @@
 function G = genWeakExpander(n, numClusters, numLinks, degBounds, ccType)
-%GENWEAKEXPANDER generate a weak expander, consisting of a few dense
-%                clusters and relatively sparse inter-cluster links
+%GENWEAKEXPANDER Generate a weak expander, consisting of a few dense
+%                clusters and relatively sparse inter-cluster links.
+%                This is a simple version in which clusters are of equal
+%                sizes.
 %   INPUTS：
 %   n -------------- number of vertices within each cluster
 %   numClusters ---- number of clusters

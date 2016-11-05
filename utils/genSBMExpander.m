@@ -1,4 +1,4 @@
-function G = genSBMExpander(N,p,q,debugFlag)
+function G = genSBMExpander(NVec,p,q,debugFlag)
 %GENSBMEXPANDER Generate a graph representing a random graph drawn from a
 %               Stochastic Block Model (SBM)
 %   INPUT:
@@ -26,18 +26,18 @@ function G = genSBMExpander(N,p,q,debugFlag)
 % last modified: Nov 2, 2016
 %
 
-if size(N,1) > size(N,2)
-    N = N';
+if size(NVec,1) > size(NVec,2)
+    NVec = NVec';
 end
 
-numClusters = length(N);
-adjMat = tril(rand(sum(N)) < q);
-posMarker = [0,cumsum(N)];
-V = zeros(sum(N), 2);
+numClusters = length(NVec);
+adjMat = tril(rand(sum(NVec)) < q);
+posMarker = [0,cumsum(NVec)];
+V = zeros(sum(NVec), 2);
 for k = 1:numClusters;
     blockIdx = (posMarker(k)+1):posMarker(k+1);
-    adjMat(blockIdx,blockIdx) = tril(rand(N(k)) < p);
-    V(blockIdx,:) = rand([N(k),2]);
+    adjMat(blockIdx,blockIdx) = tril(rand(NVec(k)) < p);
+    V(blockIdx,:) = rand([NVec(k),2]);
     V(blockIdx,1) = V(blockIdx,1)+(k-1);
 end
 adjMat = adjMat + adjMat';
@@ -70,7 +70,7 @@ if debugFlag
     fprintf('Done.\n');
 end
 
-G = struct('V', V, 'adjMat', adjMat, 'specGap', specGap,...
+G = struct('NVec', NVec, 'V', V, 'adjMat', adjMat, 'specGap', specGap,...
            'ccRowIdx', ccRowIdx, 'ccColIdx', ccColIdx,...
            'numClusters', numClusters);
 
@@ -78,7 +78,7 @@ if debugFlag
    imagesc(adjMat);
    axis equal
    axis square
-   axis([1,sum(N),1,sum(N)]);
+   axis([1,sum(NVec),1,sum(NVec)]);
    title(sprintf('Spectral Gap = %.2f, CCE/TTE = %d/%d',...
         G.specGap, length(G.ccRowIdx), sum(G.adjMat(:))/2),'Interpreter','latex');
 end

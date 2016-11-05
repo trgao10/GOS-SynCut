@@ -136,7 +136,8 @@ while true
     
     %%%%%%%%% perform the collage
     for j=1:numClusters
-        for k=1:length(clusterLabel{j}(k))
+        for k=1:length(clusterLabel{j})
+%         for k=1:length(clusterLabel{j}(k))
             CollageSolCell{clusterLabel{j}(k)} = CollageSolCell{clusterLabel{j}(k)}*ccSolCell{j};
             tmpIdx = ((clusterLabel{j}(k)-1)*d+1):(clusterLabel{j}(k)*d);
             CollageSolMat(tmpIdx,:) = CollageSolMat(tmpIdx,:)*ccSolCell{j};

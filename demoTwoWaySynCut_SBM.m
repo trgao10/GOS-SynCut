@@ -8,10 +8,10 @@ syncableFlag = false;
 debugFlag    = true;
 newCaseFlag  = true;
 
-N = [50,50];  %%% number of vertices in each cluster of the SBM ---- length of
+NVec = [50,50];  %%% number of vertices in each cluster of the SBM ---- length of
                 %%% this vector indicates the number of clusters
 d = 5;   %%% dimension of the orthogonal group
-p = 0.5;   %%% in cluster connection probability
+p = 0.6;   %%% in cluster connection probability
 q = 0.1;   %% out of cluster connection probability
 
 maxIter = 10;
@@ -23,7 +23,7 @@ colorList = {'r','b','k','m'};
 hsv = rgb2hsv(winter);
 close(gcf);
 
-numClusters = length(N);
+numClusters = length(NVec);
 params = struct('debugFlag', debugFlag,...
     'd', d,...
     'numClusters', numClusters,...
@@ -37,13 +37,13 @@ params = struct('debugFlag', debugFlag,...
 %%%% generate random graph and edge potential
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if newCaseFlag
-    G = genSBMExpander(N, p, q, debugFlag);
+    G = genSBMExpander(NVec, p, q, debugFlag);
     pause();
         
     % generate "ground truth" vertex and edge potentials, and contaminate the
     % edge potential on cross-cluster links with random orthonormal matrices
-    vertPotCell = cell(1,sum(N));
-    for j=1:sum(N)
+    vertPotCell = cell(1,sum(NVec));
+    for j=1:sum(NVec)
         vertPotCell{j} = orth(rand(d));
     end
     
@@ -80,8 +80,8 @@ rslt = SynCut_TwoWay(G, edgePotCell, params);
 
 %%%% very ad-hoc error counts and error rates
 %%%% only works for two clusters!
-rslt.errCounts = min(sum(rslt.clusterLabel{1} > N(1))+sum(rslt.clusterLabel{2} <= N(1)),...
-    sum(rslt.clusterLabel{1} <= N(1))+sum(rslt.clusterLabel{2} > N(1)));
+rslt.errCounts = min(sum(rslt.clusterLabel{1} > NVec(1))+sum(rslt.clusterLabel{2} <= NVec(1)),...
+    sum(rslt.clusterLabel{1} <= NVec(1))+sum(rslt.clusterLabel{2} > NVec(1)));
 rslt.errRate = rslt.errCounts / size(G.adjMat, 1);
 
 

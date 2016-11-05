@@ -123,8 +123,9 @@ while true
         %%%% for more consistent visualization effect, always set left
         %%%% cluster to be red an right cluster to be blue
         %%%% Note this will only work for K=2 (binary clustering)!
-        n = size(G.adjMat,1) / numClusters;
-        if sum(clusterLabel{1} <= n) < sum(clusterLabel{2} <= n)
+        NVec = G.NVec;
+%         n = size(G.adjMat,1) / numClusters;
+        if sum(clusterLabel{1} <= NVec(1)) < sum(clusterLabel{2} <= NVec(1))
             tmp = clusterLabel{1};
             clusterLabel{1} = clusterLabel{2};
             clusterLabel{2} = tmp;
@@ -233,7 +234,7 @@ while true
     
     %%%%%%%%% perform the collage
     for j=1:numClusters
-        for k=1:length(clusterLabel{j}(k))
+        for k=1:length(clusterLabel{j})
             CollageSolCell{clusterLabel{j}(k)} = CollageSolCell{clusterLabel{j}(k)}*ccSolCell{j};
             tmpIdx = ((clusterLabel{j}(k)-1)*d+1):(clusterLabel{j}(k)*d);
             CollageSolMat(tmpIdx,:) = CollageSolMat(tmpIdx,:)*ccSolCell{j};
@@ -244,6 +245,7 @@ while true
         getPerEdgeFrustFromEdgePot(G.adjMat, edgePotCell, CollageSolCell);
     
     if debugFlag
+        [ccRowIdx, ccColIdx] = find(triu(crossClusterAdjMat));
         inClusterTotalFrust = zeros(1,2);
         bwClusterTotalFrust = zeros(1,2);
         bwClusterTotalFrustVecs = zeros(2,length(ccRowIdx));
@@ -348,8 +350,9 @@ while true
         %%%% for more consistent visualization effect, always set left
         %%%% cluster to be red an right cluster to be blue
         %%%% Note this will only work for K=2 (binary clustering)!
-        n = size(G.adjMat,1) / numClusters;
-        if sum(clusterLabel{1} <= n) < sum(clusterLabel{2} <= n)
+        NVec = G.NVec;
+%         n = size(G.adjMat,1) / numClusters;
+        if sum(clusterLabel{1} <= NVec(1)) < sum(clusterLabel{2} <= NVec(1))
             tmp = clusterLabel{1};
             clusterLabel{1} = clusterLabel{2};
             clusterLabel{2} = tmp;

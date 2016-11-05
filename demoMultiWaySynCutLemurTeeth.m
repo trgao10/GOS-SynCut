@@ -151,7 +151,7 @@ title('Diffusion Maps');
 %%%%% build kNN graph
 G.adjMat = full(BaseWeights);
 G.adjMat = double(G.adjMat > 0);
-G.adjMat = G.adjMat.*W;
+% G.adjMat = G.adjMat.*W;
 
 adjMask = G.adjMat;
 G.V = rand(GroupSize,2);
@@ -287,6 +287,8 @@ scatter3(rslt.embedPts(frugIdx,1),rslt.embedPts(frugIdx,2),rslt.embedPts(frugIdx
 scatter3(rslt.embedPts(inscIdx,1),rslt.embedPts(inscIdx,2),rslt.embedPts(inscIdx,3),20,'g','filled');
 title('SynCut');
 embedPts = tsne(rslt.embedPts(:,1:3),[],rslt.embedPts(:,1:3),10);
+% embedPts = tsne(rslt.embedPts(:,1:3),[],rslt.embedPts(:,1:3),10);
+% embedPts = embedPts(:,[1,3,2]);
 
 compareFig = figure('Position', [662,638,1261,726]);
 subplot(1,2,2);
@@ -314,6 +316,7 @@ title('\textbf{(b) SynCut}', 'Interpreter', 'Latex', 'FontSize', 18);
 
 %% compare with diffusion maps
 embedPts = tsne(Ydm(:,1:3),[],rslt.embedPts,10);
+% embedPts = tsne(Ydm(:,1:2),[],Ydm(:,1:3),10);
 
 figure(compareFig);
 subplot(1,2,1);
