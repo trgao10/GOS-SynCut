@@ -1,4 +1,6 @@
 function [ theta, K] = geodist_SO3( R1, R2 )
+% axis-angle representation of SO(3)
+% the geodesic distance is |theta|
 
 if abs(det(R1) - 1) > 1e-4  || abs(det(R2) - 1) > 1e-4
     disp('Input not SO(3).')
