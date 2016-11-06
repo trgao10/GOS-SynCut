@@ -98,6 +98,7 @@ while true
             sum(RelaxSolPerEdgeFrustVec));        
     end
     
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% Step 2. Spectral Clustering, Pass 1
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -291,51 +292,69 @@ while true
         fprintf('[CollageSol] bw-cluster frustration = %f\n',...
             sum(bwClusterTotalFrust(2)));
         
-        if ~exist('inCluserFigure', 'var')
-            inCluserFigure = figure('Name', 'in-cluster edge-wise frustrations should coincide');
-        else
-            figure(inCluserFigure);
-        end
-        subplot(1,2,1);
-        hist(cat(1,inClusterTotalFrustCells{1,:}));
-        title(sprintf('combinedSol, %.2f',sum(cat(1,inClusterTotalFrustCells{1,:}))));
-        subplot(1,2,2);
-        hist(cat(1,inClusterTotalFrustCells{2,:}));
-        title(sprintf('CollageSol, %.2f',sum(cat(1,inClusterTotalFrustCells{2,:}))));
+%         if ~exist('inCluserFigure', 'var')
+%             inCluserFigure = figure('Name', 'in-cluster edge-wise frustrations should coincide');
+%         else
+%             figure(inCluserFigure);
+%         end
+%         subplot(1,2,1);
+%         hist(cat(1,inClusterTotalFrustCells{1,:}));
+%         title(sprintf('combinedSol, %.2f',sum(cat(1,inClusterTotalFrustCells{1,:}))));
+%         subplot(1,2,2);
+%         hist(cat(1,inClusterTotalFrustCells{2,:}));
+%         title(sprintf('CollageSol, %.2f',sum(cat(1,inClusterTotalFrustCells{2,:}))));
         
-        if ~exist('bwClusterFigure', 'var')
-            bwClusterFigure = figure('Name', 'bw-cluster edge-wise frustrations');
-        else
-            figure(bwClusterFigure);
-        end
-        subplot(1,2,1);
-        hist(bwClusterTotalFrustVecs(1,:));
-        title(sprintf('combinedSol, %.2f',sum(bwClusterTotalFrustVecs(1,:))));
-        subplot(1,2,2);
-        hist(bwClusterTotalFrustVecs(2,:));
-        title(sprintf('CollageSol, %.2f',sum(bwClusterTotalFrustVecs(2,:))));
+%         if ~exist('bwClusterFigure', 'var')
+%             bwClusterFigure = figure('Name', 'bw-cluster edge-wise frustrations');
+%         else
+%             figure(bwClusterFigure);
+%         end
+%         subplot(1,2,1);
+%         hist(bwClusterTotalFrustVecs(1,:));
+%         title(sprintf('combinedSol, %.2f',sum(bwClusterTotalFrustVecs(1,:))));
+%         subplot(1,2,2);
+%         hist(bwClusterTotalFrustVecs(2,:));
+%         title(sprintf('CollageSol, %.2f',sum(bwClusterTotalFrustVecs(2,:))));
         
-        if ~exist('perEdgeFrustFigure', 'var')
-            perEdgeFrustFigure = figure('Position',[50,100,800,600]);
+%         if ~exist('perEdgeFrustFigure', 'var')
+%             perEdgeFrustFigure = figure('Position',[50,100,800,600]);
+%         else
+%             figure(perEdgeFrustFigure);
+%         end
+%         subplot(2,2,1);
+%         plotPerEdgeFrustration_enhance_cc(G,GroundTruthPerEdgeFrustMat,hsv);
+%         title(['GroundTruth total frustration = '...
+%             num2str(sum(GroundTruthPerEdgeFrustVec))]);
+%         subplot(2,2,2);
+%         plotPerEdgeFrustration_enhance_cc(G,RelaxSolPerEdgeFrustMat,hsv);
+%         title(['RelaxSol total frustration = '...
+%             num2str(sum(RelaxSolPerEdgeFrustVec))]);
+%         subplot(2,2,3);
+%         plotPerEdgeFrustration_enhance_cc(G,combinedSolPerEdgeFrustMat,hsv);
+%         title(['combinedSol total frustration = '...
+%             num2str(sum(combinedSolPerEdgeFrustVec))]);
+%         subplot(2,2,4);
+%         plotPerEdgeFrustration_enhance_cc(G,CollageSolPerEdgeFrustMat,hsv);
+%         title(['CollageSol total frustration = '...
+%             num2str(sum(CollageSolPerEdgeFrustVec))]);
+            
+        if ~exist('perNodeFrobDistFigure', 'var')
+            perNodeFrobDistFigure = figure('Position', [50,100,1600,400]);
         else
-            figure(perEdgeFrustFigure);
+            figure(perNodeFrobDistFigure);
         end
-        subplot(2,2,1);
-        plotPerEdgeFrustration_enhance_cc(G,GroundTruthPerEdgeFrustMat,hsv);
-        title(['GroundTruth total frustration = '...
-            num2str(sum(GroundTruthPerEdgeFrustVec))]);
-        subplot(2,2,2);
-        plotPerEdgeFrustration_enhance_cc(G,RelaxSolPerEdgeFrustMat,hsv);
-        title(['RelaxSol total frustration = '...
-            num2str(sum(RelaxSolPerEdgeFrustVec))]);
-        subplot(2,2,3);
-        plotPerEdgeFrustration_enhance_cc(G,combinedSolPerEdgeFrustMat,hsv);
-        title(['combinedSol total frustration = '...
-            num2str(sum(combinedSolPerEdgeFrustVec))]);
-        subplot(2,2,4);
-        plotPerEdgeFrustration_enhance_cc(G,CollageSolPerEdgeFrustMat,hsv);
-        title(['CollageSol total frustration = '...
-            num2str(sum(CollageSolPerEdgeFrustVec))]);
+        subplot(1, 3, 1);
+        scatter(G.V( : , 1 ), G.V( : , 2 ), [], cellfun(@(x,y)norm(x-y,'fro'), params.vertPotCell, RelaxSolCell), 'filled');
+        colormap(winter); colorbar;
+        title('Frobenius distance b/t RelaxSol and groundtruth');
+        subplot(1, 3, 2);
+        scatter(G.V( : , 1 ), G.V( : , 2 ), [], cellfun(@(x,y)norm(x-y,'fro'), params.vertPotCell, combinedSolCell), 'filled');
+        colormap(winter); colorbar;
+        title('Frobenius distance b/t combinedSol and groundtruth');
+        subplot(1, 3, 3);
+        scatter(G.V( : , 1 ), G.V( : , 2 ), [], cellfun(@(x,y)norm(x-y,'fro'), params.vertPotCell, CollageSolCell), 'filled');
+        colormap(winter); colorbar;
+        title('Frobenius distance b/t CollageSol and groundtruth');
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
