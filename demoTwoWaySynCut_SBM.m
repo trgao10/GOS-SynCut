@@ -11,7 +11,7 @@ newCaseFlag  = true;
 NVec = [50,50];  %%% number of vertices in each cluster of the SBM ---- length of
                 %%% this vector indicates the number of clusters
 d = 5;   %%% dimension of the orthogonal group
-p = 0.6;   %%% in cluster connection probability
+p = 1;%0.6;   %%% in cluster connection probability
 q = 0.1;   %% out of cluster connection probability
 
 maxIter = 10;
@@ -54,7 +54,7 @@ if newCaseFlag
     end
     if ~syncableFlag
         for j=1:length(G.ccRowIdx)
-            edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)} = orth(rand(d));
+            edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)} = -vertPotCell{rIdx(j)}*vertPotCell{cIdx(j)}';%orth(rand(d));
             edgePotCell{G.ccColIdx(j),G.ccRowIdx(j)} = edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)}';
         end
     end
