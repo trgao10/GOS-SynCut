@@ -6,4 +6,6 @@ function v = var_SO3(C1, C2)
 R = cellfun(@(x,y)real(x)*real(y)', C1, C2, 'UniformOutput', 0);
 R = cat(4,R{:});
 Rmean = mean(R, 4);
+[U, ~, V] = svd(Rmean);
+Rmean = U*V'; % this the minimizer of sum_i || r - r_i||_frob^2
 v = sum(reshape(R - repmat(Rmean, [1,1,1,size(R,4)]),[],1).^2);
