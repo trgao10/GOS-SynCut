@@ -344,7 +344,8 @@ while true
             figure(perNodeFrobDistFigure);
         end
         frobdist = @(x)cellfun(@(x,y)norm(x-y,'fro'), params.vertPotCell, x);
-        varRatio = @(x)(var(x(1:G.NVec(1)))*G.NVec(1) + var(x(G.NVec(1)+1:G.NVec(1)+G.NVec(2)))*G.NVec(2))/var(x)/length(x);
+%         varRatio = @(x)(var(x(1:G.NVec(1)))*G.NVec(1) + var(x(G.NVec(1)+1:G.NVec(1)+G.NVec(2)))*G.NVec(2))/var(x)/length(x);
+        varRatio = @(x)((var_SO3(params.vertPotCell(1:G.NVec(1)), x(1:G.NVec(1))) + var_SO3(params.vertPotCell(G.NVec(1)+1:end), x(G.NVec(1)+1:end)))/var_SO3(params.vertPotCell, x));
         RelaxSolFD = frobdist(RelaxSolCell);
         combinedSolFD = frobdist(combinedSolCell);
         CollageSolFD = frobdist(CollageSolCell);
@@ -352,15 +353,15 @@ while true
         subplot(1, 3, 1);
         scatter(G.V( : , 1 ), G.V( : , 2 ), [], RelaxSolFD, 'filled');
         colormap(winter); colorbar;
-        title( ['RelaxSol, in-class var/total var: ', num2str( varRatio(RelaxSolFD) )] );
+        title( ['RelaxSol, in-class/total variation: ', num2str( varRatio(RelaxSolCell) )] );
         subplot(1, 3, 2);
         scatter(G.V( : , 1 ), G.V( : , 2 ), [], combinedSolFD, 'filled');
         colormap(winter); colorbar;
-        title( ['combinedSol, in-class var/total var: ', num2str( varRatio(combinedSolFD) )] );
+        title( ['combinedSol, in-class/total variation: ', num2str( varRatio(combinedSolCell) )] );
         subplot(1, 3, 3);
         scatter(G.V( : , 1 ), G.V( : , 2 ), [], CollageSolFD, 'filled');
         colormap(winter); colorbar;
-        title( ['CollageSol, in-class var/total var: ', num2str( varRatio(CollageSolFD) )] );
+        title( ['CollageSol, in-class/total variation: ', num2str( varRatio(CollageSolCell) )] );
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
