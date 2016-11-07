@@ -135,7 +135,7 @@ while true
         
         %%%% plot spectral clustering results
         if ~exist('specClusteringFigure', 'var')
-            specClusteringFigure = figure('Position',[900,150,1000,400]);
+            specClusteringFigure = figure('Position',[1200,550,1000,400]);
         else
             figure(specClusteringFigure);
         end
@@ -339,22 +339,28 @@ while true
 %             num2str(sum(CollageSolPerEdgeFrustVec))]);
             
         if ~exist('perNodeFrobDistFigure', 'var')
-            perNodeFrobDistFigure = figure('Position', [50,100,1600,400]);
+            perNodeFrobDistFigure = figure('Position', [50,100,1600,400], 'Name','Frobenius dist b/t solution and groundtruth','NumberTitle','off');
         else
             figure(perNodeFrobDistFigure);
         end
+        frobdist = @(x)cellfun(@(x,y)norm(x-y,'fro'), params.vertPotCell, x);
+        varRatio = @(x)(var(x(1:G.NVec(1)))*G.NVec(1) + var(x(G.NVec(1)+1:G.NVec(1)+G.NVec(2)))*G.NVec(2))/var(x)/length(x);
+        RelaxSolFD = frobdist(RelaxSolCell);
+        combinedSolFD = frobdist(combinedSolCell);
+        CollageSolFD = frobdist(CollageSolCell);
+        
         subplot(1, 3, 1);
-        scatter(G.V( : , 1 ), G.V( : , 2 ), [], cellfun(@(x,y)norm(x-y,'fro'), params.vertPotCell, RelaxSolCell), 'filled');
+        scatter(G.V( : , 1 ), G.V( : , 2 ), [], RelaxSolFD, 'filled');
         colormap(winter); colorbar;
-        title('Frobenius distance b/t RelaxSol and groundtruth');
+        title( ['RelaxSol, in-class var/total var: ', num2str( varRatio(RelaxSolFD) )] );
         subplot(1, 3, 2);
-        scatter(G.V( : , 1 ), G.V( : , 2 ), [], cellfun(@(x,y)norm(x-y,'fro'), params.vertPotCell, combinedSolCell), 'filled');
+        scatter(G.V( : , 1 ), G.V( : , 2 ), [], combinedSolFD, 'filled');
         colormap(winter); colorbar;
-        title('Frobenius distance b/t combinedSol and groundtruth');
+        title( ['combinedSol, in-class var/total var: ', num2str( varRatio(combinedSolFD) )] );
         subplot(1, 3, 3);
-        scatter(G.V( : , 1 ), G.V( : , 2 ), [], cellfun(@(x,y)norm(x-y,'fro'), params.vertPotCell, CollageSolCell), 'filled');
+        scatter(G.V( : , 1 ), G.V( : , 2 ), [], CollageSolFD, 'filled');
         colormap(winter); colorbar;
-        title('Frobenius distance b/t CollageSol and groundtruth');
+        title( ['CollageSol, in-class var/total var: ', num2str( varRatio(CollageSolFD) )] );
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -401,9 +407,11 @@ while true
     [wRowIdx,wColIdx,wVals] = find(CollageSolPerEdgeFrustMat);
     wAdjMat = sparse(wRowIdx,wColIdx,exp(-wVals/mean(wVals)),size(wAdjMat,1),size(wAdjMat,2));
     
-    if (abs(xi) < tol) || (iterCounter >= maxIter) || ((xi_old < Inf) && (abs(xi-xi_old) < tol*xi_old))
-        break
-    end
+%     if (abs(xi) < tol) || (iterCounter >= maxIter) || ((xi_old < Inf) && (abs(xi-xi_old) < tol*xi_old))
+%         break
+%     end
+    break;
+
 end
 
 rslt = struct('G', G, 'params', params, 'iterCounter', iterCounter);
