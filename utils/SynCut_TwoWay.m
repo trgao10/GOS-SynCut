@@ -59,7 +59,7 @@ if debugFlag
     vertPotMat = cat(1, vertPotCell{:});
     GCL_unnormalized = diag(GCL_Dvec) - GCL_W;
     [GroundTruthPerEdgeFrustVec, GroundTruthPerEdgeFrustMat] =...
-        getPerEdgeFrustration(G, GCL_W, d, vertPotCell);
+        getPerEdgeFrustFromEdgePot(G.adjMat, edgePotCell, vertPotCell);
     rescaled_vertPotMat = diag(sqrt(GCL_Dvec))*vertPotMat;
     fprintf('[GroundTruth] Rayleigh quotient (normalized GCL) = %f\n',...
         trace(rescaled_vertPotMat'*GCL*rescaled_vertPotMat));
@@ -316,27 +316,27 @@ while true
 %         hist(bwClusterTotalFrustVecs(2,:));
 %         title(sprintf('CollageSol, %.2f',sum(bwClusterTotalFrustVecs(2,:))));
         
-%         if ~exist('perEdgeFrustFigure', 'var')
-%             perEdgeFrustFigure = figure('Position',[50,100,800,600]);
-%         else
-%             figure(perEdgeFrustFigure);
-%         end
-%         subplot(2,2,1);
-%         plotPerEdgeFrustration_enhance_cc(G,GroundTruthPerEdgeFrustMat,hsv);
-%         title(['GroundTruth total frustration = '...
-%             num2str(sum(GroundTruthPerEdgeFrustVec))]);
-%         subplot(2,2,2);
-%         plotPerEdgeFrustration_enhance_cc(G,RelaxSolPerEdgeFrustMat,hsv);
-%         title(['RelaxSol total frustration = '...
-%             num2str(sum(RelaxSolPerEdgeFrustVec))]);
-%         subplot(2,2,3);
-%         plotPerEdgeFrustration_enhance_cc(G,combinedSolPerEdgeFrustMat,hsv);
-%         title(['combinedSol total frustration = '...
-%             num2str(sum(combinedSolPerEdgeFrustVec))]);
-%         subplot(2,2,4);
-%         plotPerEdgeFrustration_enhance_cc(G,CollageSolPerEdgeFrustMat,hsv);
-%         title(['CollageSol total frustration = '...
-%             num2str(sum(CollageSolPerEdgeFrustVec))]);
+        if ~exist('perEdgeFrustFigure', 'var')
+            perEdgeFrustFigure = figure('Position',[50,100,800,600]);
+        else
+            figure(perEdgeFrustFigure);
+        end
+        subplot(2,2,1);
+        plotPerEdgeFrustration_enhance_cc(G,GroundTruthPerEdgeFrustMat,hsv);
+        title(['GroundTruth total frustration = '...
+            num2str(sum(GroundTruthPerEdgeFrustVec))]);
+        subplot(2,2,2);
+        plotPerEdgeFrustration_enhance_cc(G,RelaxSolPerEdgeFrustMat,hsv);
+        title(['RelaxSol total frustration = '...
+            num2str(sum(RelaxSolPerEdgeFrustVec))]);
+        subplot(2,2,3);
+        plotPerEdgeFrustration_enhance_cc(G,combinedSolPerEdgeFrustMat,hsv);
+        title(['combinedSol total frustration = '...
+            num2str(sum(combinedSolPerEdgeFrustVec))]);
+        subplot(2,2,4);
+        plotPerEdgeFrustration_enhance_cc(G,CollageSolPerEdgeFrustMat,hsv);
+        title(['CollageSol total frustration = '...
+            num2str(sum(CollageSolPerEdgeFrustVec))]);
             
         if ~exist('perNodeFrobDistFigure', 'var')
             perNodeFrobDistFigure = figure('Position', [50,100,1600,400], 'Name','Frobenius dist b/t solution and groundtruth','NumberTitle','off');
