@@ -86,7 +86,6 @@ while true
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     [wGCL, wGCL_Dvec, wGCL_W] = assembleGCL(wAdjMat, edgePotCell, d);
     [RelaxSolCell, RelaxSolMat] = syncRoutine(wGCL, d, wGCL_Dvec);
-%     [RelaxSolCell, RelaxSolMat] = syncSpecRelax(wGCL, d, wGCL_Dvec);
     [RelaxSolPerEdgeFrustVec, RelaxSolPerEdgeFrustMat] =...
         getPerEdgeFrustFromEdgePot(G.adjMat, edgePotCell, RelaxSolCell);
     
@@ -126,7 +125,6 @@ while true
         %%%% cluster to be red an right cluster to be blue
         %%%% Note this will only work for K=2 (binary clustering)!
         NVec = G.NVec;
-%         n = size(G.adjMat,1) / numClusters;
         if sum(clusterLabel{1} <= NVec(1)) < sum(clusterLabel{2} <= NVec(1))
             tmp = clusterLabel{1};
             clusterLabel{1} = clusterLabel{2};
@@ -162,8 +160,7 @@ while true
         adjMat_cluster = G.adjMat(clusterLabel{j},clusterLabel{j});
         edgePotCell_cluster = edgePotCell(clusterLabel{j},clusterLabel{j});
         [GCL_cluster, GCL_Dvec_cluster, GCL_W_cluster] = assembleGCL(adjMat_cluster, edgePotCell_cluster, d);
-        [~, rescaled_relaxSol_cluster{j}] = syncRoutine(GCL_cluster, d, GCL_Dvec_cluster);        
-%         [~, rescaled_relaxSol_cluster{j}] = syncSpecRelax(GCL_cluster, d, GCL_Dvec_cluster);        
+        [~, rescaled_relaxSol_cluster{j}] = syncRoutine(GCL_cluster, d, GCL_Dvec_cluster);
     end
     
     combinedSolCell = cell(1,size(G.adjMat,1));
@@ -205,7 +202,6 @@ while true
     for j=1:numClusters
         crossClusterAdjMat(clusterLabel{j},clusterLabel{j}) = 0;
     end
-    % [ccRowIdx, ccColIdx] = find(triu(crossClusterAdjMat));
     
     %%%%%%%%% form cross-partition edge potential
     ccEdgePotCell = cell(numClusters, numClusters);
@@ -234,7 +230,6 @@ while true
     %%%%%%%%% synchronize the ccGraph
     [ccGCL, ccGCL_Dvec, ccGCL_W] = assembleGCL(ccAdjMat, ccEdgePotCell, d);
     [ccSolCell, ccSolMat] = syncRoutine(ccGCL, d, ccGCL_Dvec);
-%     [ccSolCell, ccSolMat] = syncSpecRelax(ccGCL, d, ccGCL_Dvec);
     
     %%%%%%%%% perform the collage
     for j=1:numClusters
@@ -355,7 +350,6 @@ while true
         %%%% cluster to be red an right cluster to be blue
         %%%% Note this will only work for K=2 (binary clustering)!
         NVec = G.NVec;
-%         n = size(G.adjMat,1) / numClusters;
         if sum(clusterLabel{1} <= NVec(1)) < sum(clusterLabel{2} <= NVec(1))
             tmp = clusterLabel{1};
             clusterLabel{1} = clusterLabel{2};
@@ -382,7 +376,7 @@ while true
         fprintf('+++++++++++++++++++++++++++++++++++++++++++++++++++\n');
         pause();
     end
-        
+    
     [wRowIdx,wColIdx,wVals] = find(CollageSolPerEdgeFrustMat);
     wAdjMat = sparse(wRowIdx,wColIdx,exp(-wVals/mean(wVals)),size(wAdjMat,1),size(wAdjMat,2));
     
