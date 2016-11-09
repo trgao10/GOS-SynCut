@@ -53,7 +53,7 @@ if newCaseFlag
         edgePotCell{rIdx(j),cIdx(j)} =  vertPotCell{rIdx(j)}*vertPotCell{cIdx(j)}';%vertPotCell{rIdx(j)}*vertPotCell{cIdx(j)}'*randSO3(3);%
     end
     if ~syncableFlag
-        R = orth(rand(d));
+        R = orth(rand(d))
         for j=1:length(G.ccRowIdx)
             edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)} =  R*vertPotCell{G.ccRowIdx(j)}*vertPotCell{G.ccColIdx(j)}';%vertPotCell{G.ccRowIdx(j)}*vertPotCell{G.ccColIdx(j)}'*randSO3(3);% orth(rand(d));%
             edgePotCell{G.ccColIdx(j),G.ccRowIdx(j)} = edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)}';
