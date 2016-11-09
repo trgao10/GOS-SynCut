@@ -15,7 +15,7 @@ GroupNames = {'Alouatta','Ateles','Brachyteles','Callicebus','Saimiri'};
 DisplayLayout = [5,10];
 visFlag = true;
 
-BNN = 7; %%% perfect spot for separating three clusters
+BNN = 8; %%% perfect spot for separating three clusters
 colorsList = [228,26,28;0,126,204;77,175,74;152,78,163;255,127,0;255,255,51;166,86,40;247,129,191]/255;
 markerList = {'+','o','x','^','d'};
 
@@ -32,6 +32,13 @@ adjType = 'dis';
 colorList = {'r','b','k','m'};
 hsv = rgb2hsv(winter);
 close(gcf);
+
+%%%%%%% Spectral Relaxation
+% syncRoutine = @syncSpecRelax;
+%%%%%%% SDP Relaxation: less scalable option
+%%%%%%%%%%% if using SDP, must make sure CVX is in the path %%%%%%%%%%%%%%%
+syncRoutine = @syncSDPRelax;
+run ~/Documents/MATLAB/cvx/cvx_startup.m
 
 %% visualization options
 options = struct('sample_path', sample_path,...
@@ -151,7 +158,7 @@ title('Diffusion Maps');
 %%%%% build kNN graph
 G.adjMat = full(BaseWeights);
 G.adjMat = double(G.adjMat > 0);
-% G.adjMat = G.adjMat.*W;
+G.adjMat = G.adjMat.*W;
 
 adjMask = G.adjMat;
 G.V = rand(GroupSize,2);
@@ -266,7 +273,8 @@ params = struct('debugFlag', debugFlag,...
                 'numKmeans', numKmeans,...
                 'bandwidth', bandwidth,...
                 'adjType', adjType,...
-                'hsv', hsv);
+                'hsv', hsv,...
+                'syncRoutine', syncRoutine);
 [params.vertPotCell] = deal(vertPotCell);
 
 rslt = SynCut(G, RCell, params);
@@ -298,7 +306,7 @@ plot(embedPts(frugIdx,1), embedPts(frugIdx,2), 'o', 'Color', colorsList(2,:));
 plot(embedPts(inscIdx,1), embedPts(inscIdx,2), 'x', 'Color', colorsList(3,:));
 axis equal
 axis square
-legend('Folivore', 'Frugivore', 'Insectivore', 'Location', 'NorthWest');
+legend('Folivore', 'Frugivore', 'Insectivore', 'Location', 'NorthEast');
 title('\textbf{(b) SynCut}', 'Interpreter', 'Latex', 'FontSize', 18);
 
 speciesFig = figure('Position', [662,638,1261,726]);
@@ -311,7 +319,7 @@ for j=1:length(GroupNames)
 end
 axis equal
 axis square
-legend(GroupNames, 'Location', 'NorthWest');
+legend(GroupNames, 'Location', 'NorthEast');
 title('\textbf{(b) SynCut}', 'Interpreter', 'Latex', 'FontSize', 18);
 
 %% compare with diffusion maps
@@ -326,7 +334,7 @@ plot(embedPts(frugIdx,1), embedPts(frugIdx,2), 'o', 'Color', colorsList(2,:));
 plot(embedPts(inscIdx,1), embedPts(inscIdx,2), 'x', 'Color', colorsList(3,:));
 axis equal
 axis square
-legend('Folivore', 'Frugivore', 'Insectivore', 'Location', 'NorthWest');
+legend('Folivore', 'Frugivore', 'Insectivore', 'Location', 'NorthEast');
 title('\textbf{(a) Diffusion Maps}', 'Interpreter', 'Latex', 'FontSize', 18);
 
 figure(speciesFig);
@@ -339,5 +347,5 @@ for j=1:length(GroupNames)
 end
 axis equal
 axis square
-legend(GroupNames, 'Location', 'NorthWest');
+legend(GroupNames, 'Location', 'NorthEast');
 title('\textbf{(a) Diffusion Maps}', 'Interpreter', 'Latex', 'FontSize', 18);

@@ -23,6 +23,13 @@ colorList = {'r','b','k','m'};
 hsv = rgb2hsv(winter);
 close(gcf);
 
+%%%%%%% Spectral Relaxation
+syncRoutine = @syncSpecRelax;
+%%%%%%% SDP Relaxation: less scalable option
+%%%%%%%%%%% if using SDP, must make sure CVX is in the path %%%%%%%%%%%%%%%
+% syncRoutine = @syncSDPRelax;
+% run ~/Documents/MATLAB/cvx/cvx_startup.m
+
 numClusters = length(NVec);
 params = struct('debugFlag', debugFlag,...
     'd', d,...
@@ -32,7 +39,8 @@ params = struct('debugFlag', debugFlag,...
     'numKmeans', numKmeans,...
     'bandwidth', bandwidth,...
     'adjType', adjType,...
-    'hsv', hsv);
+    'hsv', hsv,...
+    'syncRoutine', syncRoutine);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% generate random graph and edge potential
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -21,6 +21,7 @@ maxIter = getoptions(params, 'maxIter', 10);
 numKmeans = getoptions(params, 'numKmeans', 200);
 bandwidth = getoptions(params, 'bandwidth', 1);
 adjType = getoptions(params, 'adjType', 'dis');
+syncRoutine = getoptions(params, 'syncRoutine', @syncSpecRelax);
 
 if numClusters > 2
     warning('For numClusters > 2, use the routine "SynCut" instead.');
@@ -59,7 +60,7 @@ if debugFlag
     vertPotMat = cat(1, vertPotCell{:});
     GCL_unnormalized = diag(GCL_Dvec) - GCL_W;
     [GroundTruthPerEdgeFrustVec, GroundTruthPerEdgeFrustMat] =...
-        getPerEdgeFrustration(G, GCL_W, d, vertPotCell);
+        getPerEdgeFrustFromEdgePot(G.adjMat, edgePotCell, vertPotCell);
     rescaled_vertPotMat = diag(sqrt(GCL_Dvec))*vertPotMat;
     fprintf('[GroundTruth] Rayleigh quotient (normalized GCL) = %f\n',...
         trace(rescaled_vertPotMat'*GCL*rescaled_vertPotMat));
@@ -84,7 +85,8 @@ while true
     %%%%% Step 1. Synchronization (global)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     [wGCL, wGCL_Dvec, wGCL_W] = assembleGCL(wAdjMat, edgePotCell, d);
-    [RelaxSolCell, RelaxSolMat] = syncSpecRelax(wGCL, d, wGCL_Dvec);
+    [RelaxSolCell, RelaxSolMat] = syncRoutine(wGCL, d, wGCL_Dvec);
+%     [RelaxSolCell, RelaxSolMat] = syncSpecRelax(wGCL, d, wGCL_Dvec);
     [RelaxSolPerEdgeFrustVec, RelaxSolPerEdgeFrustMat] =...
         getPerEdgeFrustFromEdgePot(G.adjMat, edgePotCell, RelaxSolCell);
     
@@ -160,7 +162,8 @@ while true
         adjMat_cluster = G.adjMat(clusterLabel{j},clusterLabel{j});
         edgePotCell_cluster = edgePotCell(clusterLabel{j},clusterLabel{j});
         [GCL_cluster, GCL_Dvec_cluster, GCL_W_cluster] = assembleGCL(adjMat_cluster, edgePotCell_cluster, d);
-        [~, rescaled_relaxSol_cluster{j}] = syncSpecRelax(GCL_cluster, d, GCL_Dvec_cluster);        
+        [~, rescaled_relaxSol_cluster{j}] = syncRoutine(GCL_cluster, d, GCL_Dvec_cluster);        
+%         [~, rescaled_relaxSol_cluster{j}] = syncSpecRelax(GCL_cluster, d, GCL_Dvec_cluster);        
     end
     
     combinedSolCell = cell(1,size(G.adjMat,1));
@@ -230,7 +233,8 @@ while true
     
     %%%%%%%%% synchronize the ccGraph
     [ccGCL, ccGCL_Dvec, ccGCL_W] = assembleGCL(ccAdjMat, ccEdgePotCell, d);
-    [ccSolCell, ccSolMat] = syncSpecRelax(ccGCL, d, ccGCL_Dvec);
+    [ccSolCell, ccSolMat] = syncRoutine(ccGCL, d, ccGCL_Dvec);
+%     [ccSolCell, ccSolMat] = syncSpecRelax(ccGCL, d, ccGCL_Dvec);
     
     %%%%%%%%% perform the collage
     for j=1:numClusters
