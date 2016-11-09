@@ -58,12 +58,17 @@ if newCaseFlag
     edgePotCell = cell(size(G.adjMat));
     [rIdx, cIdx] = find(G.adjMat);
     for j=1:length(rIdx)
-        edgePotCell{rIdx(j),cIdx(j)} =  vertPotCell{rIdx(j)}*vertPotCell{cIdx(j)}';%vertPotCell{rIdx(j)}*vertPotCell{cIdx(j)}'*randSO3(3);%
+        edgePotCell{rIdx(j),cIdx(j)} = vertPotCell{rIdx(j)}*vertPotCell{cIdx(j)}'; %vertPotCell{rIdx(j)}*vertPotCell{cIdx(j)}'*randSO3(3);%
     end
     if ~syncableFlag
-        R = orth(rand(d))
+%         R = eye(d);
+        R = orth(rand(d));
         for j=1:length(G.ccRowIdx)
-            edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)} =  vertPotCell{G.ccRowIdx(j)}*vertPotCell{G.ccColIdx(j)}'*randSO3(3);% orth(rand(d));%R*vertPotCell{G.ccRowIdx(j)}*vertPotCell{G.ccColIdx(j)}';%
+            %%% the line below leads to a failure
+%             edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)} = vertPotCell{G.ccRowIdx(j)}*vertPotCell{G.ccColIdx(j)}'*R;
+            %%% the line below leads to a success
+            edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)} = vertPotCell{G.ccRowIdx(j)}*R'*vertPotCell{G.ccColIdx(j)}';
+%             edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)} = vertPotCell{G.ccRowIdx(j)}*vertPotCell{G.ccColIdx(j)}'*randSO3(3); % orth(rand(d));%R*vertPotCell{G.ccRowIdx(j)}*vertPotCell{G.ccColIdx(j)}';%
             edgePotCell{G.ccColIdx(j),G.ccRowIdx(j)} = edgePotCell{G.ccRowIdx(j),G.ccColIdx(j)}';
         end
     end

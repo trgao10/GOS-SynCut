@@ -404,11 +404,10 @@ while true
     [wRowIdx,wColIdx,wVals] = find(CollageSolPerEdgeFrustMat);
     wAdjMat = sparse(wRowIdx,wColIdx,exp(-wVals/mean(wVals)),size(wAdjMat,1),size(wAdjMat,2));
     
-%     if (abs(xi) < tol) || (iterCounter >= maxIter) || ((xi_old < Inf) && (abs(xi-xi_old) < tol*xi_old))
-%         break
-%     end
-    break;
-
+    if (abs(xi) < tol) || (iterCounter >= maxIter) || ((xi_old < Inf) && (abs(xi-xi_old) < tol*xi_old))
+        break
+    end
+%     break;
 end
 
 rslt = struct('G', G, 'params', params, 'iterCounter', iterCounter);

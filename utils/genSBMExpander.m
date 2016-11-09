@@ -43,6 +43,16 @@ end
 adjMat = adjMat + adjMat';
 adjMat = adjMat - diag(diag(adjMat));
 
+%%%% shrink cluster to its centroid for better visualization quality
+for j=1:numClusters
+    blockIdx = (posMarker(j)+1):posMarker(j+1);
+    Vblock = V(blockIdx,:);
+    VCenter = mean(Vblock,1);
+    Vblock = (Vblock-repmat(VCenter,size(Vblock,1),1))*0.8 + ...
+        repmat(VCenter,size(Vblock,1),1);
+    V(blockIdx,:) = Vblock;
+end
+
 if debugFlag
     fprintf('counting inter-cluster links...\n');
 end
