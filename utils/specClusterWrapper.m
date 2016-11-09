@@ -57,7 +57,10 @@ L = diag(1./sqrt(Dvec))*W*diag(1./sqrt(Dvec));
 L = (L+L')/2;
 
 [evecs, evals] = eig(L);
-devals = 1-diag(evals);
+devals = diag(evals);
+devals(devals < 0) = 0;
+devals = 1 - devals;
+% devals = 1-diag(evals);
 [devals,evalidx] = sort(devals,'ascend');
 % [~,evalidx] = sort(abs(diag(evals)),'descend');
 evecs = evecs(:,evalidx);
